@@ -15,33 +15,74 @@ public class MaxProductOfThree {
     /**
      * Given a non-empty array A,
      * return the value of the maximal product of any triplet.
+     * 
+     * Check these combinations:
+     * 
+     * o first 3 elements (highest values)
+     * o last 3 elements (lowest values – can have 2 large negative values 
+     *   that create a positive and then multipled by a positive)
+     * o first element and last 2 elements
+     * o first 2 elements and last element
+     * 
+     * Runtime: O(n) - Space: O(6)
      */
-    static public int maxProductOfThree0(int[] arr) {
+    static public int maxProductOfThree(int[] arr) {
 
         // **** initialization ****
         int[] maxArr = {Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE};
+        int[] minArr = {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE};
+
+        // **** traverse the array looking for the maximum values - O(n + 6) ****
+        for (int v : arr) {
+
+            // **** update max values - O(3) ****
+            maxValues(maxArr, v);
+
+            // **** update min values - O(3) ****
+            minValues(minArr, v);
+        }
 
         // ???? ????
         System.out.println("<<< maxArr: " + Arrays.toString(maxArr));
+        System.out.println("<<< minArr: " + Arrays.toString(minArr));
 
-        // **** traverse the array looking for the maximum values ****
-        for (int v : arr) {
+        // **** [1] first 3 elements ****
+        int maxVal = maxArr[0] * maxArr[1] * maxArr[2];
 
-            // **** ****
-            maxValues(maxArr, v);
+        // ???? ????
+        System.out.println("<<< maxVal: " + maxVal);
 
-            // ???? ????
-            System.out.println("<<< maxArr: " + Arrays.toString(maxArr));
-        }
+        // **** [2] last 3 elements ****
+        int p = minArr[0] * minArr[1] * minArr[2];
+        if (p > maxVal) maxVal = p;
+
+        // ???? ????
+        System.out.println("<<< maxVal: " + maxVal);
+
+        // **** [3] first element and last 2 elements ****
+        p = maxArr[0] * minArr[0] * minArr[1];
+        if (p > maxVal) maxVal = p;
+
+        // ???? ????
+        System.out.println("<<< maxVal: " + maxVal);
+
+        // **** [4] first 2 elements and last element ****
+        p = maxArr[0] * maxArr[1] * minArr[0];
+        if (p > maxVal) maxVal = p;
+
+        // ???? ????
+        System.out.println("<<< maxVal: " + maxVal);
 
         // **** return this product ****
-        return maxArr[0] * maxArr[1] * maxArr[2];
+        return maxVal;
     }
 
 
     /**
      * Auxiliary function.
-     * Keep three largest values in first argument.
+     * Keep 3 largest values in array.
+     * 
+     * Runtime: O(3) - Space: O(0)
      */
     static private void  maxValues(int[] maxArr, int v) {
         if (v > maxArr[0]) {
@@ -58,23 +99,42 @@ public class MaxProductOfThree {
 
 
     /**
+     * Auxiliary function.
+     * Keep 3 mallest values in array.
+     * 
+     * Runtime: O(3) - Space: O(0)
+     */
+    static private void minValues(int[] minArr, int v) {
+        if (v < minArr[0]) {
+            minArr[2] = minArr[1];
+            minArr[1] = minArr[0];
+            minArr[0] = v;
+        } else if (v < minArr[1]) {
+            minArr[2] = minArr[1];
+            minArr[1] = v;
+        } else if (v < minArr[2]) {
+            minArr[2] = v;
+        }
+    }
+
+
+    /**
      * Given a non-empty array A,
      * return the value of the maximal product of any triplet.
      * 
-     * Possible combinations: 
+     * Check these combinations:
+     * 
      * o first 3 elements (highest values)
-     * o last 3 elements (lowest values – can have 2 large negative values that create a positive and then multipled by a positive)
+     * o last 3 elements (lowest values – can have 2 large negative values 
+     *   that create a positive and then multipled by a positive)
      * o first element and last 2 elements
      * o first 2 elements and last element
      * 
      * Runtime: O(n * log(n)) - Space: O(n)
      */
-    static public int maxProductOfThree(int[] arr) {
+    static public int maxProductOfThree0(int[] arr) {
 
-        // **** initialization ****
-        int maxVal          = Integer.MIN_VALUE;
-
-        // **** create and populate list ****
+        // **** initialization - create and populate list ****
         List<Integer> lst   = new ArrayList<>();
         for (int v : arr)
             lst.add(v);
@@ -83,53 +143,41 @@ public class MaxProductOfThree {
         System.out.println("<<< lst: " + lst.toString());
         
         // **** sort the list - O(n * log(n)) ****
-        Collections.sort(lst);
+        Collections.sort(lst, (a,b) -> b - a);
 
         // ???? ????
         System.out.println("<<< lst: " + lst.toString());
 
         // **** first 3 elements ****
-        int a = lst.get(0);
-        int b = lst.get(1);
-        int c = lst.get(2);
-        int p = a * b * c;
+        int maxVal = lst.get(0) * lst.get(1) * lst.get(2);
 
         // ???? ????
-        System.out.println("<<< p: " + p);
-
-        // **** update max value ****
-        maxVal = maxVal > p ? maxVal : p;
+        System.out.println("<<< maxVal: " + maxVal);
 
         // **** last 3 elements ****
         int siz = lst.size();
-        int z = lst.get(siz - 1);
-        int y = lst.get(siz - 2);
-        int x = lst.get(siz - 3);
-        p = x * y * z;
-
-        // ???? ????
-        System.out.println("<<< p: " + p);
+        int p = lst.get(siz - 1) * lst.get(siz - 2) * lst.get(siz - 3);
 
         // **** update max value ****
-        maxVal = maxVal > p ? maxVal : p;
+        if (p > maxVal) maxVal = p;
+
+        // ???? ????
+        System.out.println("<<< maxVal: " + maxVal);
 
         // **** first element and last 2 elements ****
-        p = a * y * z;
-
-        // ???? ????
-        System.out.println("<<< p: " + p);
+        p = lst.get(0) * lst.get(siz - 1) * lst.get(siz - 2);
 
         // **** update max value ****
-        maxVal = maxVal > p ? maxVal : p;
+        if (p > maxVal) maxVal = p;
+
+        // ???? ????
+        System.out.println("<<< maxVal: " + maxVal);
 
         // **** first 2 elements and last element ****
-        p  = a * b * z;
-
-        // ???? ????
-        System.out.println("<<< p: " + p);
+        p  = lst.get(0) * lst.get(1) * lst.get(siz - 1);
 
         // **** update max value ****
-        maxVal = maxVal > p ? maxVal : p;
+        if (p > maxVal) maxVal = p;
 
         // **** return max value ****
         return maxVal;
@@ -155,6 +203,9 @@ public class MaxProductOfThree {
         
         // ???? ????
         System.out.println("main <<< arr: " + Arrays.toString(arr));
+
+        // **** call function of interest and display result ****
+        System.out.println("main <<< result: " + maxProductOfThree0(arr));
 
         // **** call function of interest and display result ****
         System.out.println("main <<< result: " + maxProductOfThree(arr));
