@@ -12,7 +12,7 @@ anny triplet.
 If interested in my approach and commets, I invite you to read the follwoing
 post in my blog::
 
-<T.B.D.>
+https://www.johncanessa.com/2021/11/16/maxproductofthree/
 
 Remember that one of the best ways to learn and refresh your knowledge is to
 read and experiment. Practice makes perfect.
